@@ -309,9 +309,9 @@ ReadBTTrainerParty:
 .skip_mon_3
 ; Add the terminator character to each of these names
 	ld a, "@"
-	ld [wBT_OTTempMon1NameEnd - 1], a
-	ld [wBT_OTTempMon2NameEnd - 1], a
-	ld [wBT_OTTempMon3NameEnd - 1], a
+	ld [wBT_OTTempMon1Name + MON_NAME_LENGTH - 1], a
+	ld [wBT_OTTempMon2Name + MON_NAME_LENGTH - 1], a
+	ld [wBT_OTTempMon3Name + MON_NAME_LENGTH - 1], a
 ; Fix errors in the movesets
 	call CheckBTMonMovesForErrors
 ; Repair the trainer name if needed, then copy it to wOTPlayerName
@@ -386,11 +386,9 @@ ValidateBTParty: ; unreferenced
 	ld c, l
 	ld a, [hl]
 	and a
-x = $ff
-rept $ff - NUM_POKEMON
+for x, $ff, NUM_POKEMON, -1
 	jr z, .invalid
 	cp x
-x = x - 1
 endr
 	jr nz, .valid
 
@@ -1258,7 +1256,7 @@ BattleTowerAction_EggTicket: ; BattleTowerAction $0e
 	cp EGG
 	jr nz, .not_egg
 	push hl
-	ld hl, wPartyMonOT
+	ld hl, wPartyMonOTs
 	ld de, NAME_LENGTH_JAPANESE
 	ld a, b
 	and a
